@@ -6,8 +6,12 @@ optionally — a countdown that unlocks the wish at the perfect moment.
 
 ## Features
 
-- **4 themes** — Pastel Dream, Fireworks Night, Funny Bones, Elegant Gold
-  (each with its own font, colors, decor, and confetti choreography)
+- **6 themes + custom builder** — Pastel Dream, Fireworks Night, Funny Bones, Elegant Gold,
+  Ocean Breeze, Sunset Glow, plus a **Custom theme builder** (background, accent, card style,
+  font, and decor presets)
+- **Photo gallery** — upload up to 5 photos per wish (compressed client-side, stored in
+  Supabase Storage, displayed as a gallery with lightbox)
+- **Background music** — 4 royalty-free CC0 tracks, played via a floating music toggle
 - **One-link sharing** — short id URLs (`/wish/x7k2p9`), copy-link, WhatsApp and X share buttons
 - **Dynamic preview cards** — per-wish Open Graph image (recipient name + theme colors) when the link is shared
 - **Scheduled unlock** — optionally lock the wish behind a live countdown; the message
@@ -94,17 +98,21 @@ app/
   wish/[id]/page.tsx       # The reveal (server component)
   wish/[id]/opengraph-image.tsx  # Dynamic share-card image
 components/
-  CreateWishForm.tsx       # Form (useActionState, honeypot, theme picker)
+  CreateWishForm.tsx       # Form (useActionState, honeypot, theme picker, custom builder, music, photos)
   WishReveal.tsx           # Confetti + framer-motion reveal (client)
   Countdown.tsx            # Scheduled-unlock timer, auto-refreshes at zero
   ShareButtons.tsx         # Copy / WhatsApp / X
+  ImageGallery.tsx         # Photo gallery with lightbox
+  MusicToggle.tsx          # Floating music play/pause button
 lib/
   actions.ts               # 'use server' — createWish, incrementViewCount
   supabase.ts              # Server-only Supabase client + Wish type
   wishes.ts                # Cached fetch + scheduled-unlock check
-  themes.ts                # Theme config map (single source of truth)
+  themes.ts                # Theme registry + custom theme presets + resolveTheme()
 supabase/
   schema.sql               # Run once in the Supabase SQL editor
+public/
+  audio/                   # CC0 royalty-free music tracks
 ```
 
 ## Notes & gotchas
@@ -120,9 +128,10 @@ supabase/
   canvas-confetti is dynamically imported after mount.
 - **`view_count` is best-effort** — bots will inflate it; fine for this scale.
 
-## Roadmap ideas (Phase 5)
+## Roadmap ideas
 
-- Photo upload (Supabase Storage + `photo_urls`, already in the schema)
-- Background music toggle per theme
 - Guestbook (friends add messages to a wish)
 - "Tap to reveal" suspense mode as an alternative to instant load
+- More custom theme presets (more backgrounds, accents, fonts)
+- Video uploads for wishes
+- Multi-language support
