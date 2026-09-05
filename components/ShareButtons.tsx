@@ -11,6 +11,7 @@
 import { useState, useSyncExternalStore } from "react";
 import { LuLink, LuCheck } from "react-icons/lu";
 import { FaWhatsapp, FaXTwitter } from "react-icons/fa6";
+import { useToast } from "./Toast";
 
 type ShareButtonsProps = {
   recipientName: string;
@@ -31,6 +32,7 @@ export default function ShareButtons({
   accentClass,
 }: ShareButtonsProps) {
   const url = useSyncExternalStore(emptySubscribe, getClientUrl, getServerUrl);
+  const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
 
   const text = `A birthday wish for ${recipientName}!`;
@@ -42,9 +44,10 @@ export default function ShareButtons({
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
+      showToast("Link copied to clipboard!");
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard API unavailable (permissions or insecure context); ignore.
+      showToast("Failed to copy link", "error");
     }
   }
 

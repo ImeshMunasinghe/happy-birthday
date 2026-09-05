@@ -15,6 +15,7 @@ import { resolveTheme, isThemeKey } from "@/lib/themes";
 import { incrementViewCount } from "@/lib/actions";
 import WishReveal from "@/components/WishReveal";
 import Countdown from "@/components/Countdown";
+import ParticleBackground from "@/components/ParticleBackground";
 
 /**
  * Forces per-request rendering so that scheduled unlocks reflect the
@@ -60,6 +61,9 @@ export default async function WishPage({ params }: Params) {
 
   return (
     <div className={`relative min-h-dvh overflow-hidden ${theme.pageClass}`}>
+      {/* Animated particle background */}
+      <ParticleBackground themeKey={themeKey === "custom" ? "pastel" : themeKey} />
+
       {/* Decorative layer: pure CSS, no JavaScript cost, behind the card */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         {theme.decor.map((d, i) => {

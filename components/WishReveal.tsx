@@ -16,6 +16,7 @@ import { resolveTheme, type CustomThemeConfig, type ThemeKey } from "@/lib/theme
 import ShareButtons from "./ShareButtons";
 import ImageGallery from "./ImageGallery";
 import MusicToggle from "./MusicToggle";
+import TypewriterText from "./TypewriterText";
 
 type WishRevealProps = {
   recipientName: string;
@@ -216,14 +217,19 @@ export default function WishReveal({
             {recipientName}
           </h1>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, duration: 0.5 }}
-            className={`mt-6 whitespace-pre-wrap text-lg leading-relaxed ${theme.fontClass}`}
+            className={`mt-6 text-lg leading-relaxed ${theme.fontClass}`}
           >
-            {message}
-          </motion.p>
+            <TypewriterText
+              text={message}
+              speed={25}
+              startDelay={600}
+              className="whitespace-pre-wrap"
+            />
+          </motion.div>
 
           <motion.p
             initial={{ opacity: 0 }}

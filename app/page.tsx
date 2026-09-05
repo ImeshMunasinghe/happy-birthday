@@ -41,7 +41,7 @@ export default function HomePage() {
         <div className="mt-10 flex flex-col items-center gap-6">
           <Link
             href="/create"
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 px-8 py-4 text-lg font-semibold text-white shadow-xl shadow-pink-300/50 transition hover:scale-105 hover:brightness-110"
+            className="hover-lift inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 px-8 py-4 text-lg font-semibold text-white shadow-xl shadow-pink-300/50 transition-all hover:scale-105 hover:brightness-110"
           >
             Create a wish <LuArrowRight className="h-5 w-5" />
           </Link>
