@@ -16,6 +16,7 @@ import { incrementViewCount } from "@/lib/actions";
 import WishReveal from "@/components/WishReveal";
 import Countdown from "@/components/Countdown";
 import ParticleBackground from "@/components/ParticleBackground";
+import AnimatedGradient from "@/components/AnimatedGradient";
 
 /**
  * Forces per-request rendering so that scheduled unlocks reflect the
@@ -61,6 +62,8 @@ export default async function WishPage({ params }: Params) {
 
   return (
     <div className={`relative min-h-dvh overflow-hidden ${theme.pageClass}`}>
+      {/* Animated gradient background */}
+      <AnimatedGradient themeKey={themeKey === "custom" ? "pastel" : themeKey} />
       {/* Animated particle background */}
       <ParticleBackground themeKey={themeKey === "custom" ? "pastel" : themeKey} />
 
