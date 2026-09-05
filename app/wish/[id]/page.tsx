@@ -9,7 +9,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { LuHourglass, LuArrowRight } from "react-icons/lu";
 import { getWish, isWishLocked } from "@/lib/wishes";
 import { resolveTheme, isThemeKey } from "@/lib/themes";
 import { incrementViewCount } from "@/lib/actions";
@@ -67,20 +66,6 @@ export default async function WishPage({ params }: Params) {
       {/* Animated particle background */}
       <ParticleBackground themeKey={themeKey === "custom" ? "pastel" : themeKey} />
 
-      {/* Decorative layer: pure CSS, no JavaScript cost, behind the card */}
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        {theme.decor.map((d, i) => {
-          const DecorIcon = d.icon;
-          return (
-            <div key={i} className={`absolute ${d.className}`}>
-              {DecorIcon && (
-                <DecorIcon className={d.iconClassName ?? "h-10 w-10"} />
-              )}
-            </div>
-          );
-        })}
-      </div>
-
       {locked ? (
         /* Scheduled state: countdown only; the message is withheld entirely */
         <div className="relative z-10 flex min-h-dvh flex-col items-center justify-center px-4 py-16 text-center">
@@ -88,11 +73,8 @@ export default async function WishPage({ params }: Params) {
             <div
               className={`w-full max-w-md rounded-3xl p-8 sm:p-10 ${theme.cardClass}`}
             >
-              <LuHourglass
-                className={`mx-auto h-14 w-14 animate-pop-in ${theme.accentTextClass}`}
-              />
               <p
-                className={`mt-5 text-xs font-semibold uppercase tracking-[0.25em] ${theme.accentTextClass}`}
+                className={`text-xs font-semibold uppercase tracking-[0.25em] ${theme.accentTextClass}`}
               >
                 Hold your horses
               </p>
@@ -117,7 +99,7 @@ export default async function WishPage({ params }: Params) {
             href="/create"
             className="relative z-10 mt-10 inline-flex items-center gap-1 text-xs opacity-60 underline-offset-4 hover:underline"
           >
-            Make your own wish <LuArrowRight className="h-3.5 w-3.5" />
+            Make your own wish
           </Link>
         </div>
       ) : (
@@ -141,7 +123,7 @@ export default async function WishPage({ params }: Params) {
             href="/create"
             className="relative z-10 mx-auto flex w-fit items-center gap-1 pb-8 text-xs opacity-60 underline-offset-4 hover:underline"
           >
-            Make your own wish <LuArrowRight className="h-3.5 w-3.5" />
+            Make your own wish
           </Link>
         </>
       )}

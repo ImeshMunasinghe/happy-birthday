@@ -6,8 +6,7 @@ const STATIC_ASSETS = [
   '/',
   '/create',
   '/manifest.webmanifest',
-  '/icon-192.png',
-  '/icon-512.png',
+  '/icon.svg',
 ];
 
 // Install: cache static assets

@@ -11,7 +11,6 @@
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { LuHeart, LuEye } from "react-icons/lu";
 import { resolveTheme, type CustomThemeConfig, type ThemeKey } from "@/lib/themes";
 import ShareButtons from "./ShareButtons";
 import ImageGallery from "./ImageGallery";
@@ -167,7 +166,6 @@ export default function WishReveal({
   musicTrack,
 }: WishRevealProps) {
   const theme = resolveTheme(themeKey, customTheme);
-  const ThemeIcon = theme.icon;
   const firedRef = useRef(false);
 
   useEffect(() => {
@@ -196,15 +194,6 @@ export default function WishReveal({
               <ImageGallery urls={photoUrls} />
             </motion.div>
           )}
-
-          <motion.div
-            initial={{ scale: 0, rotate: -30 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ delay: 0.15, type: "spring", stiffness: 260, damping: 18 }}
-            className="flex justify-center"
-          >
-            <ThemeIcon className={`h-16 w-16 ${theme.accentTextClass}`} />
-          </motion.div>
 
           <p
             className={`mt-5 text-xs font-semibold uppercase tracking-[0.25em] ${theme.accentTextClass}`}
@@ -238,7 +227,6 @@ export default function WishReveal({
             className="mt-6 flex items-center justify-center gap-1.5 text-sm opacity-70"
           >
             — with love, <span className="font-semibold">{senderName}</span>
-            <LuHeart className="h-4 w-4" />
           </motion.p>
 
           <motion.div
@@ -253,8 +241,7 @@ export default function WishReveal({
             />
           </motion.div>
 
-          <p className="mt-6 flex items-center justify-center gap-1.5 text-xs opacity-50">
-            <LuEye className="h-3.5 w-3.5" />
+          <p className="mt-6 text-xs opacity-50">
             opened {viewCount + 1} {viewCount + 1 === 1 ? "time" : "times"}
           </p>
         </motion.div>
