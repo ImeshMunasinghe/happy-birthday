@@ -11,7 +11,7 @@
  * but the server remains the source of truth.
  */
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useRef } from "react";
 import {
   LuGift,
   LuMail,
@@ -40,6 +40,7 @@ import {
 
 const MAX_MESSAGE = 1000;
 const MAX_NAME = 60;
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB per image
 
 const inputClass =
   "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-pink-400 focus:ring-2 focus:ring-pink-200";
@@ -72,6 +73,7 @@ export default function CreateWishForm() {
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [imageError, setImageError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   /**
    * Converts the selected local date/time to a UTC ISO instant.
@@ -122,13 +124,31 @@ export default function CreateWishForm() {
       reader.readAsDataURL(file);
     });
 
-    setImages((prev) => [...prev, ...validFiles]);
+    const newImages = [...images, ...validFiles];
+    setImages(newImages);
+
+    // Sync files to hidden input for form submission
+    syncFilesToInput(newImages);
   };
 
   /** Removes an image from the selection by index. */
   const removeImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
-    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
+    const newImages = images.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setImages(newImages);
+    setImagePreviews(newPreviews);
+
+    // Sync files to hidden input for form submission
+    syncFilesToInput(newImages);
+  };
+
+  /** Syncs the image files to the hidden file input for form submission. */
+  const syncFilesToInput = (files: File[]) => {
+    if (fileInputRef.current) {
+      const dataTransfer = new DataTransfer();
+      files.forEach((file) => dataTransfer.items.add(file));
+      fileInputRef.current.files = dataTransfer.files;
+    }
   };
 
   return (
@@ -156,6 +176,17 @@ export default function CreateWishForm() {
 
       {/* Selected music track */}
       <input type="hidden" name="music_track" value={musicTrack} />
+
+      {/* Hidden file input for image uploads - files are synced from the visible input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        name="images"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        multiple
+        className="hidden"
+        aria-hidden="true"
+      />
 
       {/* Non-field error reported by the server action */}
       {state.errors.form ? (

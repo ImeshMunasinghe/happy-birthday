@@ -23,6 +23,46 @@ const HONEYPOT_FIELD = "website";
 
 const MAX_MESSAGE = 1000;
 const MAX_NAME = 60;
+const MAX_IMAGES = 5;
+const STORAGE_BUCKET = "wish-images";
+
+/**
+ * Uploads an image to Supabase Storage and returns the public URL.
+ *
+ * @param file - The image file to upload
+ * @param wishId - The wish ID to use in the file path
+ * @returns The public URL of the uploaded image, or null on failure
+ */
+async function uploadImage(file: File, wishId: string): Promise<string | null> {
+  try {
+    const supabase = getSupabase();
+    const fileExt = file.name.split(".").pop()?.toLowerCase() || "jpg";
+    const fileName = `${generateId()}.${fileExt}`;
+    const filePath = `${wishId}/${fileName}`;
+
+    const { error } = await supabase.storage
+      .from(STORAGE_BUCKET)
+      .upload(filePath, file, {
+        contentType: file.type,
+        upsert: false,
+      });
+
+    if (error) {
+      console.error("Image upload failed:", error.message);
+      return null;
+    }
+
+    // Get the public URL
+    const { data } = supabase.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+  } catch (err) {
+    console.error("Image upload threw:", err);
+    return null;
+  }
+}
 
 /**
  * Server Action: validate the create-wish form, insert the row, and
@@ -107,6 +147,13 @@ export async function createWish(
   // Insert with bounded retry: a unique-violation means the generated id
   // already exists (unlikely at this scale); regenerate and try again.
   const supabase = getSupabase();
+
+  // Get image files from form data
+  const imageFiles = formData
+    .getAll("images")
+    .filter((f): f is File => f instanceof File && f.size > 0)
+    .slice(0, MAX_IMAGES);
+
   for (let attempt = 0; attempt < 3; attempt++) {
     const id = generateId();
 
@@ -123,6 +170,19 @@ export async function createWish(
       }
     }
 
+    // Upload images to Supabase Storage
+    const imageUrls: string[] = [];
+    if (imageFiles.length > 0) {
+      const uploadResults = await Promise.all(
+        imageFiles.map((file) => uploadImage(file, id))
+      );
+      uploadResults.forEach((url) => {
+        if (url) {
+          imageUrls.push(url);
+        }
+      });
+    }
+
     const { error } = await supabase.from("wishes").insert({
       id,
       recipient_name: values.recipient_name,
@@ -132,6 +192,7 @@ export async function createWish(
       scheduled_for: scheduledFor,
       custom_theme: customTheme,
       music_track: values.music_track || null,
+      photo_urls: imageUrls.length > 0 ? imageUrls : null,
     });
 
     if (!error) {
