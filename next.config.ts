@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "5mb",
     },
   },
+  // Cloudflare Pages doesn't include sharp; disable image optimization
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

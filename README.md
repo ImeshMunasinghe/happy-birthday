@@ -89,6 +89,40 @@ Open http://localhost:3000 → create a wish → watch the round-trip work.
    and optionally `NEXT_PUBLIC_SITE_URL` = your final URL)
 4. Deploy
 
+## Deploying to Cloudflare Pages
+
+Cloudflare Pages is a great alternative to Vercel (and is accessible from more regions).
+This project is configured for Cloudflare via `@opennextjs/cloudflare`.
+
+### 1. Push to GitHub
+
+Push this folder to a GitHub repository.
+
+### 2. Create a Cloudflare account
+
+Go to [dash.cloudflare.com](https://dash.cloudflare.com), sign in or create an account.
+
+### 3. Create a Pages project
+
+1. In the Cloudflare dashboard, go to **Workers & Pages** → **Create application** → **Pages**
+2. Connect your GitHub repo
+3. Set the build settings:
+   - **Build command**: `npx @opennextjs/cloudflare build`
+   - **Output directory**: `.open-next/build`
+4. Add the following environment variables:
+   - `NEXT_PUBLIC_SUPABASE_URL` — your Supabase project URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — your Supabase anon key
+   - `NEXT_PUBLIC_SITE_URL` — your final Cloudflare Pages URL (e.g. `https://your-app.pages.dev`)
+5. Click **Save and Deploy**
+
+Cloudflare will handle the build and deploy automatically on each git push.
+
+### Local preview
+
+```bash
+npm run pages:preview
+```
+
 ## Project structure
 
 ```
