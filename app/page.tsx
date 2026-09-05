@@ -1,69 +1,67 @@
-import Image from "next/image";
+/**
+ * Landing page: introduces the product and links to the create form.
+ * Server component; decorative icons are pure CSS-animated.
+ */
+import Link from "next/link";
+import {
+  LuPartyPopper,
+  LuGift,
+  LuCake,
+  LuSparkles,
+  LuRocket,
+  LuArrowRight,
+} from "react-icons/lu";
+import { THEMES, THEME_KEYS } from "@/lib/themes";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <main className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-rose-50 via-amber-50 to-sky-50 px-6 py-16 text-center">
+      {/* Decorative floating icons, animated with CSS only */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <LuRocket className="absolute left-[8%] top-[18%] h-10 w-10 animate-float-slow text-pink-400" />
+        <LuPartyPopper className="absolute right-[10%] top-[24%] h-9 w-9 animate-float-slower text-amber-500" />
+        <LuGift className="absolute bottom-[16%] left-[14%] h-9 w-9 animate-float-slower text-violet-400" />
+        <LuCake className="absolute bottom-[22%] right-[12%] h-10 w-10 animate-float-slow text-sky-400" />
+        <LuSparkles className="absolute left-[45%] top-[8%] h-7 w-7 animate-float-slower text-yellow-400" />
+      </div>
+
+      <div className="relative">
+        <LuCake className="mx-auto h-16 w-16 animate-pop-in text-pink-500" />
+        <h1 className="mt-6 max-w-2xl text-4xl font-extrabold tracking-tight text-slate-800 sm:text-6xl">
+          Make someone&rsquo;s day{" "}
+          <span className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
+            unforgettable
+          </span>
+        </h1>
+        <p className="mx-auto mt-4 max-w-md text-lg text-slate-500">
+          Create a beautiful birthday wish, pick a vibe, and share it with a
+          single link.
+        </p>
+
+        <div className="mt-10 flex flex-col items-center gap-6">
+          <Link
+            href="/create"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 px-8 py-4 text-lg font-semibold text-white shadow-xl shadow-pink-300/50 transition hover:scale-105 hover:brightness-110"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Create a wish <LuArrowRight className="h-5 w-5" />
+          </Link>
+
+          <div className="flex flex-wrap justify-center gap-2 text-sm text-slate-500">
+            {THEME_KEYS.map((key) => {
+              const ThemeIcon = THEMES[key].icon;
+              return (
+                <span
+                  key={key}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/70 px-3 py-1"
+                >
+                  <ThemeIcon className="h-4 w-4" />
+                  {THEMES[key].label}
+                </span>
+              );
+            })}
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
