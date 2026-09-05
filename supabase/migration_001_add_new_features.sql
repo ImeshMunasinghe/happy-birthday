@@ -40,14 +40,18 @@ on conflict (id) do nothing;
 
 -- ------------------------------------------------------------
 -- 4. Create storage policies for wish-images bucket
+-- Drop existing policies first (safe if they don't exist)
+DROP POLICY IF EXISTS "wish_images_select_public" ON storage.objects;
+DROP POLICY IF EXISTS "wish_images_insert_public" ON storage.objects;
+
 -- Public read access (anyone can view uploaded images)
-CREATE POLICY IF NOT EXISTS "wish_images_select_public"
+CREATE POLICY "wish_images_select_public"
   ON storage.objects FOR SELECT
   TO anon, authenticated
   USING (bucket_id = 'wish-images');
 
 -- Public insert access (anyone can upload images)
-CREATE POLICY IF NOT EXISTS "wish_images_insert_public"
+CREATE POLICY "wish_images_insert_public"
   ON storage.objects FOR INSERT
   TO anon, authenticated
   WITH CHECK (bucket_id = 'wish-images');
