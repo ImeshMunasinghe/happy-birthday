@@ -10,6 +10,8 @@
 --     are deliberately no UPDATE or DELETE policies for anon users.
 --   - View counting goes through a security-definer function so the
 --     counter can be incremented atomically without granting UPDATE.
+--   - Photo uploads go to a public storage bucket; the `photo_urls`
+--     column stores the public URLs.
 -- ============================================================
 
 -- ------------------------------------------------------------
@@ -21,9 +23,11 @@ create table if not exists public.wishes (
   sender_name text not null,
   message text not null,
   theme text not null default 'pastel'
-    check (theme in ('pastel', 'fireworks', 'funny', 'elegant')),
-  photo_urls text[] default '{}',               -- reserved for a future photo feature
+    check (theme in ('pastel', 'fireworks', 'funny', 'elegant', 'ocean', 'sunset', 'custom')),
+  photo_urls text[] default '{}',               -- public URLs of uploaded wish images
   scheduled_for timestamptz,                    -- optional unlock moment (UTC)
+  custom_theme jsonb,                           -- custom theme overrides (colors, font, card style)
+  music_track text,                             -- optional background music track key
   created_at timestamptz not null default now(),
   view_count int not null default 0
 );
@@ -78,3 +82,27 @@ end;
 $$;
 
 grant execute on function public.increment_view_count(text) to anon, authenticated;
+
+-- ------------------------------------------------------------
+-- Storage bucket for wish images
+--
+-- Public read (anyone can view uploaded images), but uploads are
+-- restricted to the wish-creation flow via the anon key. Files are
+-- stored under `wish-images/{wishId}/{nanoid}.webp`.
+-- ------------------------------------------------------------
+insert into storage.buckets (id, name, public)
+values ('wish-images', 'wish-images', true)
+on conflict (id) do nothing;
+
+-- Public read access for wish images.
+create policy "wish_images_select_public"
+  on storage.objects for select
+  to anon, authenticated
+  using (bucket_id = 'wish-images');
+
+-- Anyone may upload to the wish-images bucket (the wish-creation
+-- flow generates random filenames, preventing overwrites).
+create policy "wish_images_insert_public"
+  on storage.objects for insert
+  to anon, authenticated
+  with check (bucket_id = 'wish-images');

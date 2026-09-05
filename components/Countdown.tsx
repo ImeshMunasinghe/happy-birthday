@@ -11,7 +11,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { THEMES, type ThemeKey } from "@/lib/themes";
+import { resolveTheme, type ThemeKey } from "@/lib/themes";
 
 type CountdownProps = {
   targetIso: string;
@@ -23,7 +23,7 @@ function pad(n: number) {
 }
 
 export default function Countdown({ targetIso, themeKey }: CountdownProps) {
-  const theme = THEMES[themeKey];
+  const theme = resolveTheme(themeKey);
   const router = useRouter();
 
   // null until the first client tick: prevents SSR/CSR hydration mismatch

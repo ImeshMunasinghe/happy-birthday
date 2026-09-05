@@ -12,8 +12,10 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { LuHeart, LuEye } from "react-icons/lu";
-import { THEMES, type ThemeKey } from "@/lib/themes";
+import { resolveTheme, type CustomThemeConfig, type ThemeKey } from "@/lib/themes";
 import ShareButtons from "./ShareButtons";
+import ImageGallery from "./ImageGallery";
+import MusicToggle from "./MusicToggle";
 
 type WishRevealProps = {
   recipientName: string;
@@ -21,6 +23,9 @@ type WishRevealProps = {
   message: string;
   themeKey: ThemeKey;
   viewCount: number;
+  customTheme?: CustomThemeConfig | null;
+  photoUrls?: string[] | null;
+  musicTrack?: string | null;
 };
 
 /**
@@ -156,8 +161,11 @@ export default function WishReveal({
   message,
   themeKey,
   viewCount,
+  customTheme,
+  photoUrls,
+  musicTrack,
 }: WishRevealProps) {
-  const theme = THEMES[themeKey];
+  const theme = resolveTheme(themeKey, customTheme);
   const ThemeIcon = theme.icon;
   const firedRef = useRef(false);
 
@@ -178,6 +186,16 @@ export default function WishReveal({
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className={`w-full max-w-lg rounded-3xl p-8 text-center sm:p-12 ${theme.cardClass}`}
         >
+          {photoUrls && photoUrls.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.4 }}
+            >
+              <ImageGallery urls={photoUrls} />
+            </motion.div>
+          )}
+
           <motion.div
             initial={{ scale: 0, rotate: -30 }}
             animate={{ scale: 1, rotate: 0 }}
@@ -235,6 +253,10 @@ export default function WishReveal({
           </p>
         </motion.div>
       </div>
+
+      {musicTrack && (
+        <MusicToggle track={musicTrack} accentClass={theme.buttonClass} />
+      )}
     </div>
   );
 }

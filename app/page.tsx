@@ -11,7 +11,7 @@ import {
   LuRocket,
   LuArrowRight,
 } from "react-icons/lu";
-import { THEMES, THEME_KEYS } from "@/lib/themes";
+import { resolveTheme, THEME_KEYS } from "@/lib/themes";
 
 export default function HomePage() {
   return (
@@ -48,14 +48,15 @@ export default function HomePage() {
 
           <div className="flex flex-wrap justify-center gap-2 text-sm text-slate-500">
             {THEME_KEYS.map((key) => {
-              const ThemeIcon = THEMES[key].icon;
+              const theme = resolveTheme(key);
+              const ThemeIcon = theme.icon;
               return (
                 <span
                   key={key}
                   className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white/70 px-3 py-1"
                 >
                   <ThemeIcon className="h-4 w-4" />
-                  {THEMES[key].label}
+                  {theme.label}
                 </span>
               );
             })}

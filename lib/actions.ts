@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { customAlphabet } from "nanoid";
 import { getSupabase } from "./supabase";
-import { isThemeKey } from "./themes";
+import { isThemeKey, type CustomThemeConfig } from "./themes";
 import type { CreateWishState } from "./form-state";
 
 /**
@@ -60,6 +60,7 @@ export async function createWish(
     // The client converts the viewer's local date/time to a UTC instant
     // before submission; browsers know their timezone, servers do not.
     scheduled_for: get("scheduled_for"),
+    music_track: get("music_track"),
   };
 
   // Validation: collect all field errors so the form can render them inline.
@@ -109,6 +110,19 @@ export async function createWish(
   for (let attempt = 0; attempt < 3; attempt++) {
     const id = generateId();
 
+    // Parse custom theme config if the theme is "custom"
+    let customTheme: CustomThemeConfig | null = null;
+    if (values.theme === "custom") {
+      const raw = get("custom_theme");
+      if (raw) {
+        try {
+          customTheme = JSON.parse(raw) as CustomThemeConfig;
+        } catch {
+          errors.theme = "Invalid custom theme configuration.";
+        }
+      }
+    }
+
     const { error } = await supabase.from("wishes").insert({
       id,
       recipient_name: values.recipient_name,
@@ -116,6 +130,8 @@ export async function createWish(
       message: values.message,
       theme: values.theme,
       scheduled_for: scheduledFor,
+      custom_theme: customTheme,
+      music_track: values.music_track || null,
     });
 
     if (!error) {

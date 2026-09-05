@@ -11,7 +11,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { LuHourglass, LuArrowRight } from "react-icons/lu";
 import { getWish, isWishLocked } from "@/lib/wishes";
-import { THEMES, isThemeKey } from "@/lib/themes";
+import { resolveTheme, isThemeKey } from "@/lib/themes";
 import { incrementViewCount } from "@/lib/actions";
 import WishReveal from "@/components/WishReveal";
 import Countdown from "@/components/Countdown";
@@ -55,7 +55,7 @@ export default async function WishPage({ params }: Params) {
   if (!wish) notFound();
 
   const themeKey = isThemeKey(wish.theme) ? wish.theme : "pastel";
-  const theme = THEMES[themeKey];
+  const theme = resolveTheme(themeKey, wish.custom_theme);
   const locked = isWishLocked(wish);
 
   return (
@@ -125,6 +125,9 @@ export default async function WishPage({ params }: Params) {
             message={wish.message}
             themeKey={themeKey}
             viewCount={wish.view_count}
+            customTheme={wish.custom_theme}
+            photoUrls={wish.photo_urls}
+            musicTrack={wish.music_track}
           />
 
           <Link

@@ -5,9 +5,11 @@
 import type { Metadata } from "next";
 import {
   Baloo_2,
+  Bebas_Neue,
   Chewy,
   Fredoka,
   Geist,
+  Pacifico,
   Playfair_Display,
 } from "next/font/google";
 import "./globals.css";
@@ -40,6 +42,18 @@ const fontElegant = Playfair_Display({
   subsets: ["latin"],
 });
 
+const fontPacifico = Pacifico({
+  variable: "--font-pacifico",
+  weight: "400",
+  subsets: ["latin"],
+});
+
+const fontBebas = Bebas_Neue({
+  variable: "--font-bebas",
+  weight: "400",
+  subsets: ["latin"],
+});
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
@@ -56,7 +70,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${fontPastel.variable} ${fontFireworks.variable} ${fontFunny.variable} ${fontElegant.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${fontPastel.variable} ${fontFireworks.variable} ${fontFunny.variable} ${fontElegant.variable} ${fontPacifico.variable} ${fontBebas.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">{children}</body>
     </html>

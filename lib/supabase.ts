@@ -1,6 +1,6 @@
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { ThemeKey } from "./themes";
+import type { CustomThemeConfig, ThemeKey } from "./themes";
 
 /**
  * A wish row as it lives in Supabase.
@@ -14,6 +14,8 @@ export type Wish = {
   theme: ThemeKey;
   photo_urls: string[] | null;
   scheduled_for: string | null;
+  custom_theme: CustomThemeConfig | null;
+  music_track: string | null;
   created_at: string;
   view_count: number;
 };

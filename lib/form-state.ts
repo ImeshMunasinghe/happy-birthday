@@ -19,6 +19,7 @@ export type CreateWishState = {
     scheduled: boolean;
     scheduled_date: string;
     scheduled_time: string;
+    music_track: string;
   };
 };
 
@@ -33,5 +34,6 @@ export const EMPTY_FORM_STATE: CreateWishState = {
     scheduled: false,
     scheduled_date: "",
     scheduled_time: "",
+    music_track: "",
   },
 };

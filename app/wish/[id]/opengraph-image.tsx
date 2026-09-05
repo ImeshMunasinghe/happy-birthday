@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getWish, isWishLocked } from "@/lib/wishes";
-import { THEMES, isThemeKey } from "@/lib/themes";
+import { resolveTheme, isThemeKey } from "@/lib/themes";
 
 export const alt = "A birthday wish";
 export const size = { width: 1200, height: 630 };
@@ -23,7 +23,8 @@ export default async function OpengraphImage({
 
   // Fall back to neutral content if the wish cannot be resolved.
   const name = wish?.recipient_name ?? "Someone special";
-  const theme = THEMES[isThemeKey(wish?.theme ?? "") ? wish!.theme : "pastel"];
+  const themeKey = isThemeKey(wish?.theme ?? "") ? wish!.theme : "pastel";
+  const theme = resolveTheme(themeKey, wish?.custom_theme ?? null);
   const locked = wish ? isWishLocked(wish) : false;
 
   // Layout uses inline styles only: the satori renderer supports a CSS
